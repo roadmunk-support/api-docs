@@ -1,0 +1,35 @@
+document.addEventListener('DOMContentLoaded', function() {
+  function closest (element, selector) {
+    if (Element.prototype.closest) {
+      return element.closest(selector);
+    }
+    do {
+      if (Element.prototype.matches && element.matches(selector)
+        || Element.prototype.msMatchesSelector && element.msMatchesSelector(selector)
+        || Element.prototype.webkitMatchesSelector && element.webkitMatchesSelector(selector)) {
+        return element;
+      }
+      element = element.parentElement || element.parentNode;
+    } while (element !== null && element.nodeType === 1);
+    return null;
+  }
+
+  // social share popups
+  Array.prototype.forEach.call(document.querySelectorAll('.share a'), function(anchor) {
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      window.open(this.href, '', 'height = 500, width = 500');
+    });
+  });
+
+  // In some cases we should preserve focus after page reload
+  function saveFocus() {
+    var activeElementId = document.activeElement.getAttribute("id");
+    sessionStorage.setItem('returnFocusTo', '#' + activeElementId);
+  }
+  var returnFocusTo = sessionStorage.getItem('returnFocusTo');
+  if (returnFocusTo) {
+    sessionStorage.removeItem('returnFocusTo');
+    var returnFocusToEl = document.querySelector(returnFocusTo);
+    returnFocusToEl && returnFocusToEl.focus && returnFocusToEl.focus();
+  }
